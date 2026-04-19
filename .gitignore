@@ -1,0 +1,32 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# macOS
+.DS_Store
+
+# Obsidian workspace state (optional — comment out if you want to track layout)
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/graph.json
+
+# Temporary files
+*.tmp
+*.swp
+
+# Paper binaries and MinerU intermediates (knowledge layer = paper.md + paper.bib + images/).
+# PDFs are recoverable from arxiv; non-arxiv PDFs should be backed up separately.
+raw/papers/**/paper.pdf
+raw/papers/**/*_origin.pdf
+raw/papers/**/layout.json
+raw/papers/**/*_model.json
+raw/papers/**/content_list_v2.json
+raw/papers/**/*_content_list.json
