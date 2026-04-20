@@ -79,14 +79,21 @@ def make_slug(csl_item: dict, arxiv_id: str | None) -> str:
     return slugify(f"{first_last}-{year}-{short}")
 
 
-def make_citation_key(csl_item: dict) -> str:
+def make_citation_key(csl_item: dict, arxiv_id: str | None = None) -> str:
     authors = csl_item.get("author") or []
     first_last = ((authors[0].get("family") if authors else "unknown") or "unknown").lower()
     first_last = re.sub(r"[^a-z]", "", first_last) or "unknown"
     ym = ((csl_item.get("issued") or {}).get("date-parts") or [[None]])[0]
     year = str(ym[0]) if ym and ym[0] else "nd"
     short = first_content_word(csl_item.get("title") or "paper")
-    return f"{first_last}{year}{short}"
+    base = f"{first_last}{year}{short}"
+    # Disambiguate with last 4 digits of arxiv_id when available: prevents key collisions for
+    # papers that share {author, year, first-word-of-title}.
+    if arxiv_id:
+        tail = re.sub(r"[^0-9]", "", arxiv_id)[-4:]
+        if tail:
+            return f"{base}{tail}"
+    return base
 
 
 def csl_to_bibtex(csl_item: dict, citation_key: str, arxiv_id: str | None) -> str:
@@ -204,7 +211,7 @@ def scaffold(decision: dict, reader) -> tuple[str, str, str]:
     target_dir = RAW_PAPERS / slug
     target_dir.mkdir(parents=True, exist_ok=True)
 
-    citation_key = make_citation_key(csl_item)
+    citation_key = make_citation_key(csl_item, arxiv_id)
     bib_path = target_dir / "paper.bib"
     if not bib_path.exists():
         bib_path.write_text(csl_to_bibtex(csl_item, citation_key, arxiv_id), encoding="utf-8")
