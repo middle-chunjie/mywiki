@@ -25,7 +25,7 @@ Operational contract for Claude Code agents working in this repository. Read bef
 | Operation | Triggers | Handler |
 |---|---|---|
 | INGEST | `ingest`, `摄入`, `处理这个` | `/ingest` skill |
-| QUERY | any direct question; `根据我的知识库`, `查一下` | `/query` skill |
+| QUERY | any direct question; `根据我的知识库`, `查一下` | `/query` skill (saves to `wiki/outputs/` by default; user can say `--ephemeral` / `简答` for chat-only reply) |
 | LINT | `lint`, `检查`, `健康检查` | `/lint` skill |
 | REFLECT | `reflect`, `综合分析`, `发现规律` | `/reflect` skill |
 | MERGE | `merge`, `去重` | `/merge` skill |
@@ -74,7 +74,8 @@ If the user's content is opinionated and belongs in a concept page, suggest rout
   - ❌ `[[价值投资]]` (Chinese), `[[ValueInvesting]]` (camelCase), `[[value_investing]]` (snake), `[[Attention]]` (PascalCase)
 - Chinese names go in `aliases` and in parenthetical form in Definition lines; never in wikilinks.
 - **Allowed**: source → concept/entity; concept → concept/entity/source; synthesis → concept/entity/source.
-- **Forbidden**: wikilinks to system files (`log`, `index`, `overview`, `QUESTIONS`); any file under `wiki/outputs/`; operation names (`ingest`, `query`, `reflect`). `wiki/log.md` uses plain paths, never wikilinks.
+- **Forbidden**: wikilinks to system files (`log`, `index`, `overview`, `QUESTIONS`, `hot`, `rejections`); any file under `wiki/outputs/`; operation names (`ingest`, `query`, `reflect`). `wiki/log.md` uses plain paths, never wikilinks.
+- **Wikilink is a promise** — before writing any page to disk, verify every `[[target]]` in the body resolves to (a) a page you are creating in the same operation, (b) an existing `wiki/concepts/` or `wiki/entities/` file, or (c) any existing concept/entity's `aliases`. If it doesn't, either add the target to the current create set, or demote the link to plain text. Do not leave broken wikilinks for `/lint`.
 
 ## Confidence (cross-cutting)
 
@@ -94,7 +95,7 @@ Personal writing (`subtype: personal-writing`) does not contribute to `source_co
 
 ## System files (cross-cutting)
 
-`wiki/log.md`, `wiki/index.md`, `wiki/overview.md`, `wiki/QUESTIONS.md`, and every file under `wiki/outputs/` must carry `graph-excluded: true` in frontmatter and must never be targets of wikilinks.
+`wiki/log.md`, `wiki/index.md`, `wiki/overview.md`, `wiki/QUESTIONS.md`, `wiki/hot.md`, `wiki/rejections.md`, and every file under `wiki/outputs/` must carry `graph-excluded: true` in frontmatter and must never be targets of wikilinks. `wiki/rejections.md` is `append-only: true` — new entries go through `python scripts/wiki_ops.py rejection-append` rather than hand edits.
 
 ---
 

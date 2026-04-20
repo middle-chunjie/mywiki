@@ -22,7 +22,12 @@ Cross-source synthesis and gap analysis. Cross-cutting rules (Wikilinks, Confide
 
 4. **Gap analysis** — write `wiki/outputs/gap-report-YYYY-MM-DD.md` (`graph-excluded: true`) covering:
    - Concepts with `source_count == 1` and created more than 30 days ago (isolated / unverified).
-   - Concepts mentioned in multiple sources but lacking a dedicated page (implicit blind spots).
+   - Concepts mentioned in multiple sources but lacking a dedicated page (implicit blind spots). A cheaper daily version of this check already lives in `scripts/lint.py` check 11 (orphan concept candidates); this stage adds semantic dedup (same concept under different names) and priority ranking over that raw list.
    - Topic areas with sparse coverage relative to claimed importance.
 
-Finally: update `wiki/overview.md` Health Dashboard, update `wiki/index.md` Recent Synthesis, and append to `wiki/log.md`.
+Finally:
+- Update `wiki/overview.md` Health Dashboard (hand-edit).
+- Call `python scripts/wiki_ops.py index-update --add-synthesis <synthesis-slug> --summary "<one-line>"` (and repeat with the gap-report slug if appropriate).
+- Call `python scripts/wiki_ops.py log-append reflect "<scope>"`.
+
+**Wikilink discipline**: every `[[...]]` you emit in synthesis pages or the gap report must resolve to a real wiki page (or an alias). Don't leave broken wikilinks for `/lint`.
