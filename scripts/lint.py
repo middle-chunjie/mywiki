@@ -32,7 +32,8 @@ WIKILINK_RE = re.compile(r"\[\[([^\]|]+)(?:\|[^\]]+)?\]\]")
 CITE_KEY_RE = re.compile(r"@\w+\s*\{\s*([^,]+)\s*,", re.MULTILINE)
 
 VOLATILITY_DAYS = {"high": 90, "medium": 180, "low": 365}
-SYSTEM_STEMS = {"index", "log", "overview", "QUESTIONS"}
+SYSTEM_STEMS = {"index", "log", "overview", "QUESTIONS", "hot", "rejections"}
+ORPHAN_THRESHOLD = 3
 
 # ----------------------------- helpers -----------------------------
 
@@ -109,18 +110,47 @@ def check_1_frontmatter(files: list[Path]) -> list[str]:
     return findings
 
 
+def build_alias_index(files: list[Path]) -> dict[str, str]:
+    """Return {lowercase_alias: concept_slug}. Used by check_2 alias-aware resolution
+    and by check_7 cross-language duplication detection."""
+    alias_index: dict[str, str] = {}
+    for f in files:
+        if "concepts" not in f.parts and "entities" not in f.parts:
+            continue
+        fm, _ = parse_frontmatter(f.read_text(encoding="utf-8"))
+        aliases = fm.get("aliases") or []
+        if not isinstance(aliases, list):
+            continue
+        for a in aliases:
+            key = str(a).strip().lower()
+            if key:
+                alias_index[key] = f.stem
+    return alias_index
+
+
 def check_2_broken_wikilinks(files: list[Path]) -> list[str]:
     findings: list[str] = []
     stem_index: set[str] = set()
     for p in WIKI_DIR.rglob("*.md"):
         stem_index.add(p.stem)
+    alias_index = build_alias_index(files)
     for f in files:
         text = f.read_text(encoding="utf-8")
         for m in WIKILINK_RE.finditer(text):
             target = m.group(1).strip()
             stem = Path(target).stem
-            if stem not in stem_index:
-                findings.append(f"{f.relative_to(WIKI_ROOT)}: broken wikilink [[{target}]]")
+            if stem in stem_index:
+                continue
+            alias_hit = alias_index.get(stem.lower())
+            if alias_hit:
+                findings.append(
+                    f"{f.relative_to(WIKI_ROOT)}: wikilink [[{target}]] can be rewritten as "
+                    f"[[{alias_hit}|{target}]] (alias match)"
+                )
+            else:
+                findings.append(
+                    f"{f.relative_to(WIKI_ROOT)}: broken wikilink [[{target}]]"
+                )
     return findings
 
 
@@ -255,6 +285,48 @@ def check_9_paper_folder_integrity(files: list[Path]) -> list[str]:
     return findings
 
 
+def check_11_orphan_concepts(files: list[Path]) -> list[str]:
+    """Slugs referenced in >= ORPHAN_THRESHOLD distinct source pages but lacking a concept page
+    and not present as any concept's alias."""
+    findings: list[str] = []
+    concept_stems: set[str] = set()
+    for f in files:
+        if "concepts" in f.parts:
+            concept_stems.add(f.stem)
+    alias_index = build_alias_index(files)
+
+    slug_to_sources: dict[str, set[str]] = defaultdict(set)
+    for f in files:
+        if "sources" not in f.parts:
+            continue
+        text = f.read_text(encoding="utf-8")
+        _, body = parse_frontmatter(text)
+        seen_in_this_source: set[str] = set()
+        for m in WIKILINK_RE.finditer(body):
+            target = Path(m.group(1).strip()).stem
+            if not target:
+                continue
+            seen_in_this_source.add(target)
+        for slug in seen_in_this_source:
+            slug_to_sources[slug].add(f.stem)
+
+    for slug, sources in slug_to_sources.items():
+        if slug in concept_stems:
+            continue
+        if slug.lower() in alias_index:
+            continue
+        # Exclude wikilinks pointing to other sources or entities (those aren't orphan concepts).
+        # A slug is an "orphan candidate" if it matches no wiki/ page at all; we check below.
+        if any(slug == p.stem for p in files if "sources" in p.parts or "entities" in p.parts):
+            continue
+        if len(sources) >= ORPHAN_THRESHOLD:
+            findings.append(
+                f"'{slug}' mentioned in {len(sources)} sources but no wiki/concepts/{slug}.md "
+                f"(orphan candidate)"
+            )
+    return findings
+
+
 def check_10_bibkey_uniqueness() -> list[str]:
     findings: list[str] = []
     key_to_files = defaultdict(list)
@@ -275,7 +347,7 @@ def check_10_bibkey_uniqueness() -> list[str]:
 
 CHECK_LABELS = {
     1: "YAML frontmatter validity",
-    2: "Broken wikilinks",
+    2: "Broken wikilinks (alias-aware)",
     3: "Index consistency",
     4: "Stub pages",
     5: "Near-duplicate concept slugs",
@@ -284,6 +356,7 @@ CHECK_LABELS = {
     8: "Wikilink format",
     9: "Paper folder integrity",
     10: "Citation-key uniqueness across paper.bib files",
+    11: "Orphan concept candidates",
 }
 
 N_CHECKS = len(CHECK_LABELS)
@@ -341,6 +414,7 @@ def main(argv: list[str]) -> int:
         8: check_8_wikilink_format(files),
         9: check_9_paper_folder_integrity(files),
         10: check_10_bibkey_uniqueness(),
+        11: check_11_orphan_concepts(files),
     }
 
     report = render_report(results)
