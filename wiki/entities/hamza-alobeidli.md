@@ -1,0 +1,28 @@
+---
+type: entity
+title: Hamza Alobeidli
+slug: hamza-alobeidli
+date: 2026-04-20
+entity_type: person
+aliases: [Alobeidli Hamza, "Alobeidli, Hamza"]
+tags: []
+---
+
+## Description
+
+Hamza Alobeidli is a co-author of [[penedo-2023-refinedweb-2306-01116]] and a member of the Falcon LLM team. In this paper, he is listed under affiliation marker `^2` in the author block.
+
+## Key Contributions
+
+- Co-authored [[penedo-2023-refinedweb-2306-01116]], including the Falcon-RW evaluation of RefinedWeb-trained models.
+- Helped support the argument that scalable web refinement can substitute for curated pretraining mixtures.
+
+## Related Concepts
+
+- [[data-filtering]]
+- [[data-deduplication]]
+- [[zero-shot-generalization]]
+
+## Sources
+
+- [[penedo-2023-refinedweb-2306-01116]]

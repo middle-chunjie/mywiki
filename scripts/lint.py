@@ -138,7 +138,9 @@ def check_2_broken_wikilinks(files: list[Path]) -> list[str]:
         text = f.read_text(encoding="utf-8")
         for m in WIKILINK_RE.finditer(text):
             target = m.group(1).strip()
-            stem = Path(target).stem
+            # Use the full target as slug (strip only trailing .md if present),
+            # not Path.stem which incorrectly strips version suffixes like ".2" or ".5b".
+            stem = target[:-3] if target.endswith(".md") else target
             if stem in stem_index:
                 continue
             alias_hit = alias_index.get(stem.lower())
@@ -182,11 +184,26 @@ def check_4_stubs(files: list[Path]) -> list[str]:
     return findings
 
 
+def _load_rejected_pairs() -> set[frozenset[str]]:
+    """Return set of {a, b} frozensets previously judged not-a-merge by LLM Phase 2."""
+    rejected: set[frozenset[str]] = set()
+    rej = WIKI_DIR / "rejections.md"
+    if not rej.is_file():
+        return rejected
+    text = rej.read_text(encoding="utf-8")
+    for m in re.finditer(r"lint-merge-candidate\s*[—|]\s*([\w-]+)\s*~\s*([\w-]+)", text):
+        rejected.add(frozenset({m.group(1), m.group(2)}))
+    return rejected
+
+
 def check_5_near_duplicates(files: list[Path]) -> list[str]:
     findings: list[str] = []
     concept_slugs = [f.stem for f in files if "concepts" in f.parts]
+    rejected = _load_rejected_pairs()
     for i, a in enumerate(concept_slugs):
         for b in concept_slugs[i + 1:]:
+            if frozenset({a, b}) in rejected:
+                continue
             score = jaccard_bigrams(a, b)
             if score > 0.7:
                 findings.append(f"near-duplicate concept slugs (Jaccard={score:.2f}): {a} ~ {b}")
@@ -327,6 +344,48 @@ def check_11_orphan_concepts(files: list[Path]) -> list[str]:
     return findings
 
 
+REQUIRED_SECTIONS = {
+    "source": ["Summary", "Method", "Key Results", "Limitations", "Concepts Extracted", "Entities Extracted"],
+    "concept": ["Definition", "Key Points", "Sources"],
+    "entity": ["Description", "Sources"],
+}
+
+SECTION_RE = re.compile(r"^##\s+([^\n]+?)\s*$", re.MULTILINE)
+
+
+def check_12_empty_sections(files: list[Path]) -> list[str]:
+    """Flag required sections that are missing or have empty body (whitespace/comments only).
+
+    Complements Check 4 (whole-page stubs) by catching pages with content overall but a
+    specific required section left unfilled."""
+    findings: list[str] = []
+    for f in files:
+        text = f.read_text(encoding="utf-8")
+        fm, body = parse_frontmatter(text)
+        page_type = fm.get("type")
+        required = REQUIRED_SECTIONS.get(str(page_type))
+        if not required:
+            continue
+        # Split body by ## headings
+        matches = list(SECTION_RE.finditer(body))
+        sections: dict[str, str] = {}
+        for i, m in enumerate(matches):
+            name = m.group(1).strip()
+            start = m.end()
+            end = matches[i + 1].start() if i + 1 < len(matches) else len(body)
+            sections[name] = body[start:end]
+        rel = f.relative_to(WIKI_ROOT)
+        for needed in required:
+            if needed not in sections:
+                findings.append(f"{rel}: missing required section ## {needed}")
+                continue
+            content = re.sub(r"<!--.*?-->", "", sections[needed], flags=re.DOTALL)
+            content = re.sub(r"```.*?```", "", content, flags=re.DOTALL)
+            if not content.strip():
+                findings.append(f"{rel}: empty ## {needed} (only whitespace or comments)")
+    return findings
+
+
 def check_10_bibkey_uniqueness() -> list[str]:
     findings: list[str] = []
     key_to_files = defaultdict(list)
@@ -357,6 +416,7 @@ CHECK_LABELS = {
     9: "Paper folder integrity",
     10: "Citation-key uniqueness across paper.bib files",
     11: "Orphan concept candidates",
+    12: "Empty or missing required sections",
 }
 
 N_CHECKS = len(CHECK_LABELS)
@@ -415,6 +475,7 @@ def main(argv: list[str]) -> int:
         9: check_9_paper_folder_integrity(files),
         10: check_10_bibkey_uniqueness(),
         11: check_11_orphan_concepts(files),
+        12: check_12_empty_sections(files),
     }
 
     report = render_report(results)
