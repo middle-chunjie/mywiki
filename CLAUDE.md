@@ -8,7 +8,7 @@ Operational contract for Claude Code agents working in this repository. Read bef
 
 - **`raw/`** — human-owned source material (papers, articles, clippings, notes, personal writing). Agent **must not** modify.
 - **`wiki/`** — agent-authored knowledge layer: `sources/`, `concepts/`, `entities/`, `synthesis/`, `outputs/`, and system files (`index.md`, `log.md`, `overview.md`, `QUESTIONS.md`). Templates in `wiki/templates/` are read-only references.
-- **`projects/<slug>/`** — per-project state for ARIS-style research. Agent-writable (`idea-stage/`, `refine-logs/`, `review-stage/`, `paper/`, each with its own `CLAUDE.md`).
+- **`projects/<slug>/`** — per-project state for ARIS-style research. Agent-writable (`idea-stage/`, `refine-logs/`, `review-stage/`, `paper/`). State tracked in `PROJECT.md`. Managed by `scripts/project_ops.py` and `/create-project`, `/project`, etc.
 - **`scripts/`** — Python helpers. Modify only when explicitly asked.
 
 ## Language
@@ -33,6 +33,10 @@ Operational contract for Claude Code agents working in this repository. Read bef
 | BATCH-IMPORT | `batch import`, `迁移 Zotero`, `/batch-import <csl-json>` | `/batch-import` skill |
 | BATCH-INGEST | `batch ingest`, `一键 INGEST`, `/batch-ingest` | `/batch-ingest` skill |
 | PROMOTE-NOTES | `promote notes`, `提炼笔记`, `/promote-notes <slug>` | `/promote-notes` skill |
+| CREATE-PROJECT | `create project`, `新建项目` | `/create-project` skill |
+| PROJECT | `project status`, `项目状态`, `resume`, `继续`, `switch to <slug>`, `切换项目` | `/project` skill (no args → status; with slug → switch + resume) |
+| PROJECT-WRITEBACK | `writeback`, `写回wiki`, `archive project`, `归档项目` | `/project-writeback` skill (add `--archive` to archive after writeback) |
+| DIGEST-CHAT | `digest`, `消化对话`, `把聊的内容入库` | `/digest-chat` skill (scans conversation since last digest, routes candidates to `/save-paper`, concepts, `/promote-notes`, ADD-QUESTION) |
 | ADD-QUESTION | `我想搞清楚`, `add question`, `记录一个问题` | inline (below) |
 | ADD-NOTE | `add note`, `加个笔记`, `追加笔记` | inline (below) |
 

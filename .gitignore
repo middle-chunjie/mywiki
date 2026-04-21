@@ -22,6 +22,11 @@ venv/
 *.tmp
 *.swp
 
+# Per-session state (written by SessionStart register hook, ephemeral per-PID)
+.claude/sessions/
+.claude/scheduled_tasks.lock
+.claude/digest-state.json
+
 # Paper binaries and MinerU intermediates (knowledge layer = paper.md + paper.bib + images/).
 # PDFs are recoverable from arxiv; non-arxiv PDFs should be backed up separately.
 raw/papers/**/paper.pdf

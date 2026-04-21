@@ -8,7 +8,7 @@ Operational contract for Claude Code agents working in this repository. Read bef
 
 - **`raw/`** — human-owned source material (papers, articles, clippings, notes, personal writing). Agent **must not** modify.
 - **`wiki/`** — agent-authored knowledge layer: `sources/`, `concepts/`, `entities/`, `synthesis/`, `outputs/`, and system files (`index.md`, `log.md`, `overview.md`, `QUESTIONS.md`). Templates in `wiki/templates/` are read-only references.
-- **`projects/<slug>/`** — per-project state for ARIS-style research. Agent-writable (`idea-stage/`, `refine-logs/`, `review-stage/`, `paper/`, each with its own `CLAUDE.md`).
+- **`projects/<slug>/`** — per-project state for ARIS-style research. Agent-writable (`idea-stage/`, `refine-logs/`, `review-stage/`, `paper/`). State tracked in `PROJECT.md`.
 - **`scripts/`** — Python helpers. Modify only when explicitly asked.
 
 ## Language

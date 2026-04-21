@@ -1,0 +1,241 @@
+{
+  "upstream_repo": "https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep.git",
+  "last_sync": "2026-04-21 22:06:09",
+  "skills": {
+    "idea-discovery": {
+      "mode": "track",
+      "synced_hash": "9efcf3b56dad92f1",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "research-pipeline": {
+      "mode": "track",
+      "synced_hash": "1aded9a226e12c1a",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "auto-review-loop": {
+      "mode": "track",
+      "synced_hash": "098920a3c5c357c0",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "research-lit": {
+      "mode": "fork",
+      "synced_hash": "8a253614e02dfd77",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21",
+      "forked_date": "2026-04-21"
+    },
+    "idea-creator": {
+      "mode": "track",
+      "synced_hash": "b5563edcd8b124e9",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "novelty-check": {
+      "mode": "track",
+      "synced_hash": "b4a4e6a6d838d34f",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "research-review": {
+      "mode": "track",
+      "synced_hash": "dc64676fd535e652",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "research-refine": {
+      "mode": "track",
+      "synced_hash": "d69f3e8146d68a39",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "research-refine-pipeline": {
+      "mode": "track",
+      "synced_hash": "7ad8443e5fc0d151",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "experiment-plan": {
+      "mode": "track",
+      "synced_hash": "d1da8a99d30b935d",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "experiment-bridge": {
+      "mode": "track",
+      "synced_hash": "98ad8f1dda094c2f",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "run-experiment": {
+      "mode": "track",
+      "synced_hash": "447db5595628f636",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "monitor-experiment": {
+      "mode": "track",
+      "synced_hash": "0f39079b4d73509a",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "auto-review-loop-llm": {
+      "mode": "track",
+      "synced_hash": "8d414cc404fe0e55",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "auto-review-loop-minimax": {
+      "mode": "track",
+      "synced_hash": "fb698211628085b0",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "result-to-claim": {
+      "mode": "track",
+      "synced_hash": "2881cd43a82543a5",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "ablation-planner": {
+      "mode": "track",
+      "synced_hash": "1578d88b3792dec7",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "paper-plan": {
+      "mode": "track",
+      "synced_hash": "4f547bfb265b2d54",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "paper-write": {
+      "mode": "track",
+      "synced_hash": "7230a7727bdd74f2",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "paper-writing": {
+      "mode": "track",
+      "synced_hash": "faf4b16246d97249",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "paper-compile": {
+      "mode": "track",
+      "synced_hash": "9ce665d014447529",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "paper-figure": {
+      "mode": "track",
+      "synced_hash": "3fe10fb3fb23bb15",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "paper-illustration": {
+      "mode": "track",
+      "synced_hash": "9f64529dc4a795db",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "paper-slides": {
+      "mode": "track",
+      "synced_hash": "adac68c56cdd9226",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "paper-poster": {
+      "mode": "track",
+      "synced_hash": "436f1467f447cfb5",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "auto-paper-improvement-loop": {
+      "mode": "track",
+      "synced_hash": "8c01e7fac878cf74",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "rebuttal": {
+      "mode": "track",
+      "synced_hash": "330bc48a2a546abe",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "experiment-audit": {
+      "mode": "track",
+      "synced_hash": "710925aea07d03a7",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "arxiv": {
+      "mode": "track",
+      "synced_hash": "38c7091038a7893a",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "deepxiv": {
+      "mode": "track",
+      "synced_hash": "9b71535f879248aa",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "semantic-scholar": {
+      "mode": "track",
+      "synced_hash": "b9c74298eeaa31d5",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "exa-search": {
+      "mode": "track",
+      "synced_hash": "4dbc9755e93e517b",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "formula-derivation": {
+      "mode": "track",
+      "synced_hash": "c9d1118029a9f1fa",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "proof-checker": {
+      "mode": "track",
+      "synced_hash": "7beb9bad05482291",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "proof-writer": {
+      "mode": "track",
+      "synced_hash": "29582623697c8001",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "analyze-results": {
+      "mode": "track",
+      "synced_hash": "9c58fe315bb789e9",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "research-wiki": {
+      "mode": "track",
+      "synced_hash": "c05cd959e1df32cc",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "meta-optimize": {
+      "mode": "track",
+      "synced_hash": "b0e31e40b7041b9b",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    },
+    "training-check": {
+      "mode": "track",
+      "synced_hash": "16ff136684d00da2",
+      "added": "2026-04-21",
+      "last_updated": "2026-04-21"
+    }
+  }
+}

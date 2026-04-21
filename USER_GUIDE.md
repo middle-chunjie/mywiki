@@ -197,6 +197,12 @@ Walks `raw/` and runs the INGEST flow on every unprocessed candidate, skipping i
 
 After ingesting a paper and writing into its `## My Notes`, use `/promote-notes <source-slug>` to formalize selected claims into the relevant concept's `## My Position`. The skill is always interactive — you confirm each promotion. The original `## My Notes` content is never modified.
 
+### Digest a conversation into the wiki
+
+When you've been reading a paper or debating a blog inside a Claude Code session and want to capture what came up — the paper itself, related work the conversation touched on, concepts that crystallized, opinions you expressed, questions that opened up — say `digest` or `/digest-chat`. The skill scans the session transcript since the last digest, proposes four categories of candidates (sources / concepts / positions / questions), and routes each approved item to the appropriate existing skill (`/save-paper`, concept page edit, `/promote-notes`, ADD-QUESTION). It also captures explicit source-to-source relationships (e.g., "A is an improved version of B") when you've stated them.
+
+The Stop hook prints a `[digest] N candidate(s) …` reminder on stderr when arxiv IDs / DOIs / URLs have accumulated since the last digest. State lives in `.claude/digest-state.json`.
+
 ### Periodic health check
 
 ```bash
@@ -278,16 +284,14 @@ FROM "wiki/QUESTIONS"
 ## Adding a research project
 
 ```bash
-PROJECT=my-new-project
-mkdir -p projects/$PROJECT/{idea-stage,refine-logs/runs,review-stage,paper/figures}
-touch projects/$PROJECT/{CLAUDE.md,findings.md}
-touch projects/$PROJECT/idea-stage/{RESEARCH_BRIEF.md,IDEA_CANDIDATES.md,IDEA_REPORT.md}
-touch projects/$PROJECT/refine-logs/{EXPERIMENT_PLAN.md,EXPERIMENT_LOG.md}
-touch projects/$PROJECT/review-stage/{NARRATIVE_REPORT.md,EXPERIMENT_AUDIT.md}
-touch projects/$PROJECT/paper/main.tex
+# Preferred: use the skill
+/create-project my-new-project "research direction description"
+
+# Or manually via CLI:
+python scripts/project_ops.py create --slug my-new-project --direction "research direction"
 ```
 
-Fill `projects/$PROJECT/CLAUDE.md` with the project dashboard (direction, venue, GPU config, status). When the ARIS skills come online, they'll read that file to drive automated work.
+This scaffolds the directory tree and creates `PROJECT.md` (state + dashboard) and `lit-review/BACKGROUND.md` (wiki-sourced background). Use `/project my-new-project` to resume work.
 
 When you're ready to build a reference list for the project's paper:
 
